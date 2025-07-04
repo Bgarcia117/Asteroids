@@ -37,11 +37,3 @@ target_compile_features(Asteroids PRIVATE cxx_std_17)
 
 # Link SFML libraries
 target_link_libraries(Asteroids PRIVATE SFML::Graphics)
-
-# Platform-specific settings
-if(WIN32)
-    # Copy SFML DLLs to output directory on Windows
-    add_custom_command(TARGET Asteroids POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:Asteroids> $<TARGET_FILE_DIR:Asteroids>
-        COMMAND_EXPAND_LISTS)
-endif()
