@@ -101,7 +101,6 @@ int main() {
 	while (window.isOpen()) {
 		float deltaTime = clock.restart().asSeconds();
 
-		std::cout << "C++ Standard version: " << __cplusplus << "\n";
 		while (const std::optional event = window.pollEvent()) {
 			if (event->is<sf::Event::Closed>()) {
 				window.close();
