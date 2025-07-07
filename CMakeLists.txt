@@ -24,7 +24,7 @@ file(GLOB_RECURSE SOURCES
 file(GLOB_RECURSE HEADERS 
     "include/*.h"
     "include/*.hpp"
-)
+) 
 
 # Create executable with all source files
 add_executable(Asteroids ${SOURCES} ${HEADERS})
@@ -33,7 +33,7 @@ add_executable(Asteroids ${SOURCES} ${HEADERS})
 target_include_directories(Asteroids PRIVATE include)
 
 # Set C++ standard
-target_compile_features(Asteroids PRIVATE cxx_std_17)
+target_compile_features(Asteroids PRIVATE cxx_std_23)
 
 # Link SFML libraries
 target_link_libraries(Asteroids PRIVATE SFML::Graphics)
