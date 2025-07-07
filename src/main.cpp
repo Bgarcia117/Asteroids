@@ -1,17 +1,22 @@
 ﻿#include <iostream>
+#include <numbers>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
+constexpr float PI = 3.14159265f;
+constexpr float TURN_SPEED = 200.0f;
+constexpr float PLAYER_SPEED = 200.f;
+
 class Player {
 public: 
 	Player()
-		: shape(sf::PrimitiveType::LineStrip, 5), position(500.f, 500.f), angle(45.f) {
-		shape[0].position = { 0.f, -30.f };   // Tip
-		shape[1].position = { -30.f, 30.f }; // Bottom Left
-		shape[2].position = { 0.f, 15.f };    // Inner Dip
-		shape[3].position = { 30.f, 30.f };  // Bottom Right
-		shape[4].position = { 0.f, -30.f };   // Close loop
+		: shape(sf::PrimitiveType::LineStrip, 5), position(500.f, 500.f), angle(0.f) {
+		shape[0].position = { 0.f, -30.f };  // Tip
+		shape[1].position = { 20.f, 20.f };  // Bottom right
+		shape[2].position = { 0.f, 10.f };   // Inward dip
+		shape[3].position = { -20.f, 20.f }; // Bottom left
+		shape[4].position = { 0.f, -30.f };  // Close loop
 
 		/*
 		 VertexArray No longer provides begin() and end() so this cannot be used
@@ -24,6 +29,27 @@ public:
 			shape[i].color = sf::Color::White;
 		}
 	}
+
+	
+	void update(float deltaTime) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A)) {
+			angle -= TURN_SPEED * deltaTime;
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D)) {
+			angle += TURN_SPEED * deltaTime;
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)) {
+			float radians = (angle - 90.f) * (PI / 180.f);
+
+			position.x += cos(radians) * PLAYER_SPEED * deltaTime;
+			position.y += sin(radians) * PLAYER_SPEED * deltaTime;
+
+		}
+
+	}
+	
 
 	/**
 	 * @brief Draws the player ship to the given target
@@ -70,13 +96,20 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode({ 1200, 900 }), "Asteroids", sf::Style::Close | sf::Style::Titlebar);
 
 	Player player;
+	sf::Clock clock;
 
 	while (window.isOpen()) {
-		while (const std::optional<sf::Event> event = window.pollEvent()) {
+		float deltaTime = clock.restart().asSeconds();
+
+		std::cout << "C++ Standard version: " << __cplusplus << "\n";
+		while (const std::optional event = window.pollEvent()) {
 			if (event->is<sf::Event::Closed>()) {
 				window.close();
 			}
+
  		}
+
+		player.update(deltaTime);
 
 		// Update Game
 		window.clear();
