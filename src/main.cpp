@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <numbers>
 #include <vector>
+#include <list>
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -9,7 +10,9 @@
 constexpr float PI = 3.14159265f;
 constexpr float TURN_SPEED = 200.0f;
 constexpr float PLAYER_SPEED = 200.f;
+constexpr float SHOOT_DELAY = 0.2f;
 constexpr float	BULLET_SPEED = 400.f;
+constexpr float BULLET_LIFE = 3.f;
 
 class Entity {
 public:
@@ -27,16 +30,23 @@ public:
 };
 
 std::vector<Entity*> entities;
+std::list<std::vector<Entity*>::iterator> toRemoveList;
 
 class Bullet : public Entity {
 public:
 	Bullet(sf::Vector2f position, sf::Vector2f direction) :
-		shape(1.f), direction(direction), Entity(position, 0.f) {
+		Entity(position, 0.f), shape(1.f), direction(direction), lifetime(BULLET_LIFE) {
 
 	}
 
 	void update(float deltaTime) override {
+		lifetime -= deltaTime;
 		position += direction * BULLET_SPEED * deltaTime;
+
+		if (lifetime <= 0.f) {
+			toRemoveList.push_back(std::find(entities.begin(), entities.end(), this));
+			// delete this;
+		}
 	}
 
 	void render(sf::RenderTarget& target) override {
@@ -46,6 +56,7 @@ public:
 private:
 	sf::CircleShape shape;
 	sf::Vector2f direction;
+	float lifetime;
  };
 
 
@@ -53,7 +64,7 @@ private:
 class Player : public Entity {
 public: 
 	Player()
-		: Entity({500.f, 500.f}, 0.f), shape(sf::PrimitiveType::LineStrip, 5) {
+		: Entity({500.f, 500.f}, 0.f), shape(sf::PrimitiveType::LineStrip, 5), shootTimer() {
 
 		shape[0].position = { 0.f, -30.f };  // Tip
 		shape[1].position = { 20.f, 20.f };  // Bottom right
@@ -75,6 +86,8 @@ public:
 
 	
 	void update(float deltaTime) override {
+		shootTimer -= deltaTime;
+
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A)) {
 			angle -= TURN_SPEED * deltaTime;
 		}
@@ -84,6 +97,7 @@ public:
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)) {
+			// Degrees -> Radian Equation: degrees * (PI/180)
 			float radians = (angle - 90.f) * (PI / 180.f);
 
 			position.x += cos(radians) * PLAYER_SPEED * deltaTime;
@@ -91,10 +105,12 @@ public:
 
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space) && shootTimer <= 0.0f) {
+			shootTimer = SHOOT_DELAY;
 			float radians = (angle - 90.f) * (PI / 180.f);
 
 			entities.push_back(new Bullet(position, sf::Vector2f(cos(radians), sin(radians))));
+			std::cout << entities.size() << std::endl;
 		}
 
 	}
@@ -136,6 +152,7 @@ public:
 
 private:
 	sf::VertexArray shape;
+	float shootTimer;
 	
 };
 
@@ -156,6 +173,8 @@ int main() {
 
  		}
 
+		toRemoveList.clear();
+
 		// Update Game
 		window.clear();
 
@@ -163,6 +182,11 @@ int main() {
 		for (size_t i = 0; i < entities.size(); i++) {
 			entities[i]->update(deltaTime);
 			entities[i]->render(window);
+		}
+
+		for (const auto& it : toRemoveList) {
+			delete* it;
+			entities.erase(it);
 		}
 		
 		/*
