@@ -1,5 +1,7 @@
 ﻿#include <iostream>
 #include <numbers>
+#include <vector>
+
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -7,11 +9,52 @@
 constexpr float PI = 3.14159265f;
 constexpr float TURN_SPEED = 200.0f;
 constexpr float PLAYER_SPEED = 200.f;
+constexpr float	BULLET_SPEED = 400.f;
 
-class Player {
+class Entity {
+public:
+	Entity(sf::Vector2f position, float angle)
+		: position(position), angle(angle) {
+
+	}
+
+	// Setting them to zero turns them into pure virtual functions
+	virtual void update(float deltaTime) = 0;
+	virtual void render(sf::RenderTarget& target) = 0;
+
+	sf::Vector2f position;
+	float angle;
+};
+
+std::vector<Entity*> entities;
+
+class Bullet : public Entity {
+public:
+	Bullet(sf::Vector2f position, sf::Vector2f direction) :
+		shape(1.f), direction(direction), Entity(position, 0.f) {
+
+	}
+
+	void update(float deltaTime) override {
+		position += direction * BULLET_SPEED * deltaTime;
+	}
+
+	void render(sf::RenderTarget& target) override {
+		target.draw(shape, sf::Transform().translate(position));
+	}
+
+private:
+	sf::CircleShape shape;
+	sf::Vector2f direction;
+ };
+
+
+
+class Player : public Entity {
 public: 
 	Player()
-		: shape(sf::PrimitiveType::LineStrip, 5), position(500.f, 500.f), angle(0.f) {
+		: Entity({500.f, 500.f}, 0.f), shape(sf::PrimitiveType::LineStrip, 5) {
+
 		shape[0].position = { 0.f, -30.f };  // Tip
 		shape[1].position = { 20.f, 20.f };  // Bottom right
 		shape[2].position = { 0.f, 10.f };   // Inward dip
@@ -31,7 +74,7 @@ public:
 	}
 
 	
-	void update(float deltaTime) {
+	void update(float deltaTime) override {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A)) {
 			angle -= TURN_SPEED * deltaTime;
 		}
@@ -48,6 +91,12 @@ public:
 
 		}
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space)) {
+			float radians = (angle - 90.f) * (PI / 180.f);
+
+			entities.push_back(new Bullet(position, sf::Vector2f(cos(radians), sin(radians))));
+		}
+
 	}
 	
 
@@ -58,7 +107,7 @@ public:
 	 * 
 	 * @param target The SFML render target to draw to
 	 */
-	void Draw(sf::RenderTarget& target) {
+	void render(sf::RenderTarget& target) override {
 		// Holds translation and rotation to be applied to shape when drawn
 		sf::Transform transform;
 
@@ -87,16 +136,15 @@ public:
 
 private:
 	sf::VertexArray shape;
-	sf::Vector2f position;
-	float angle;
 	
 };
 
 int main() {
 	sf::RenderWindow window(sf::VideoMode({ 1200, 900 }), "Asteroids", sf::Style::Close | sf::Style::Titlebar);
 
-	Player player;
 	sf::Clock clock;
+
+	entities.push_back(new Player());
 
 	while (window.isOpen()) {
 		float deltaTime = clock.restart().asSeconds();
@@ -108,12 +156,22 @@ int main() {
 
  		}
 
-		player.update(deltaTime);
-
 		// Update Game
 		window.clear();
 
-	    player.Draw(window);
+		
+		for (size_t i = 0; i < entities.size(); i++) {
+			entities[i]->update(deltaTime);
+			entities[i]->render(window);
+		}
+		
+		/*
+		for (auto& entity : entities) {
+			entity->update(deltaTime);
+			entity->render(window);
+		}
+		*/
+
 		// Draw Game
 		window.display();
 	}
