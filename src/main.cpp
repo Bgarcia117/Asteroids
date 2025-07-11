@@ -30,7 +30,8 @@ public:
 };
 
 std::vector<Entity*> entities;
-std::list<std::vector<Entity*>::iterator> toRemoveList;
+std::list<std::vector<Entity*>::const_iterator> toRemoveList;
+std::list<Entity*> toAddList;
 
 class Bullet : public Entity {
 public:
@@ -109,7 +110,7 @@ public:
 			shootTimer = SHOOT_DELAY;
 			float radians = (angle - 90.f) * (PI / 180.f);
 
-			entities.push_back(new Bullet(position, sf::Vector2f(cos(radians), sin(radians))));
+			toAddList.push_back(new Bullet(position, sf::Vector2f(cos(radians), sin(radians))));
 			std::cout << entities.size() << std::endl;
 		}
 
@@ -156,6 +157,49 @@ private:
 	
 };
 
+class Asteroid : public Entity {
+public:
+	Asteroid()
+		: Entity({ 600.f, 300.f }, 0.f), shape(sf::PrimitiveType::LineStrip, 5) {
+
+		shape[0].position = { 0.f, -30.f };  // Tip
+		shape[1].position = { 20.f, 20.f };  // Bottom right
+		shape[2].position = { 0.f, 10.f };   // Inward dip
+		shape[3].position = { -20.f, 20.f }; // Bottom left
+		shape[4].position = { 0.f, -30.f };  // Close loop
+
+		for (std::size_t i = 0; i < shape.getVertexCount(); ++i) {
+			shape[i].color = sf::Color::White;
+		}
+	}
+
+
+	void update(float deltaTime) override {
+
+
+	}
+
+	void render(sf::RenderTarget& target) override {
+		// LineStrip shapes do not have an internal position or rotation
+		// It is just a bunch of points, so we need to handle that with tranform
+		// Handles movement, rotation, and scaling
+		sf::Transform transform;
+		transform.translate(position);
+		transform.rotate(sf::degrees(angle));
+
+		// Bundles together settings: transform, textures, shader, etc
+		// To give draw()
+		sf::RenderStates states;
+		states.transform = transform;
+		
+		target.draw(shape, states);
+	}
+
+private:
+	sf::VertexArray shape;
+
+};
+
 int main() {
 	sf::RenderWindow window(sf::VideoMode({ 1200, 900 }), "Asteroids", sf::Style::Close | sf::Style::Titlebar);
 
@@ -173,6 +217,7 @@ int main() {
 
  		}
 
+		toAddList.clear();
 		toRemoveList.clear();
 
 		// Update Game
@@ -187,6 +232,10 @@ int main() {
 		for (const auto& it : toRemoveList) {
 			delete* it;
 			entities.erase(it);
+		}
+
+		for (auto& ptr : toAddList) {
+			entities.push_back(ptr);
 		}
 		
 		/*
