@@ -14,6 +14,9 @@ constexpr float SHOOT_DELAY = 0.2f;
 constexpr float	BULLET_SPEED = 400.f;
 constexpr float BULLET_LIFE = 3.f;
 
+const float ASTEROID_SPIN = 20.f;
+const float ASTEROID_SPEED = 70.f;
+
 class Entity {
 public:
 	Entity(sf::Vector2f position, float angle)
@@ -159,8 +162,8 @@ private:
 
 class Asteroid : public Entity {
 public:
-	Asteroid()
-		: Entity({ 600.f, 300.f }, 0.f), shape(sf::PrimitiveType::LineStrip, 12) {
+	Asteroid(sf::Vector2f direction)
+		: Entity({ 600.f, 300.f }, 0.f), direction(direction), shape(sf::PrimitiveType::LineStrip, 12) {
 
 		shape[0].position = { -40.f, 40.f };  
 		shape[1].position = { -50.f, 10.f };  
@@ -182,7 +185,8 @@ public:
 
 
 	void update(float deltaTime) override {
-
+		position += ASTEROID_SPEED * direction * deltaTime;
+		angle += ASTEROID_SPIN * deltaTime;
 
 	}
 
@@ -203,8 +207,8 @@ public:
 	}
 
 private:
+	sf::Vector2f direction;
 	sf::VertexArray shape;
-
 };
 
 int main() {
@@ -213,7 +217,9 @@ int main() {
 	sf::Clock clock;
 
 	entities.push_back(new Player());
-	entities.push_back(new Asteroid());
+
+	// Just moves on the x-axis right now
+	entities.push_back(new Asteroid({1.f, 0.f}));
 
 	while (window.isOpen()) {
 		float deltaTime = clock.restart().asSeconds();
