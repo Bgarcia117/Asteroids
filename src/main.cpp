@@ -160,13 +160,20 @@ private:
 class Asteroid : public Entity {
 public:
 	Asteroid()
-		: Entity({ 600.f, 300.f }, 0.f), shape(sf::PrimitiveType::LineStrip, 5) {
+		: Entity({ 600.f, 300.f }, 0.f), shape(sf::PrimitiveType::LineStrip, 12) {
 
-		shape[0].position = { 0.f, -30.f };  // Tip
-		shape[1].position = { 20.f, 20.f };  // Bottom right
-		shape[2].position = { 0.f, 10.f };   // Inward dip
-		shape[3].position = { -20.f, 20.f }; // Bottom left
-		shape[4].position = { 0.f, -30.f };  // Close loop
+		shape[0].position = { -40.f, 40.f };  
+		shape[1].position = { -50.f, 10.f };  
+		shape[2].position = { -10.f, -20.f };   
+		shape[3].position = { -20.f, -40.f }; 
+		shape[4].position = { 10.f, -40.f }; 
+		shape[5].position = { 40.f, -20.f };
+		shape[6].position = { 40.f, 10.f };
+		shape[7].position = { 30.f, 0.f} ;   
+		shape[8].position = { 40.f, 20.f };
+		shape[9].position = { 20.f, 40.f };
+		shape[10].position = { 0.f, 30.f };
+		shape[11].position = shape[0].position;
 
 		for (std::size_t i = 0; i < shape.getVertexCount(); ++i) {
 			shape[i].color = sf::Color::White;
@@ -206,6 +213,7 @@ int main() {
 	sf::Clock clock;
 
 	entities.push_back(new Player());
+	entities.push_back(new Asteroid());
 
 	while (window.isOpen()) {
 		float deltaTime = clock.restart().asSeconds();
