@@ -102,15 +102,18 @@ public:
 	void update(float deltaTime) override {
 		shootTimer -= deltaTime;
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) || 
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left)) {
 			angle -= TURN_SPEED * deltaTime;
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right)) {
 			angle += TURN_SPEED * deltaTime;
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W) ||
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up)) {
 			// Degrees -> Radian Equation: degrees * (PI/180)
 			float radians = (angle - 90.f) * (PI / 180.f);
 
@@ -178,8 +181,8 @@ private:
 
 class Asteroid : public Entity {
 public:
-	Asteroid(sf::Vector2f direction)
-		: Entity({ 600.f, 300.f }, 0.f), direction(direction), shape(sf::PrimitiveType::LineStrip, 12) {
+	Asteroid(sf::Vector2f position = getRandomPosition(), sf::Vector2f direction = Asteroid::getRandomDirection())
+		: Entity(position, 0.f), direction(direction), shape(sf::PrimitiveType::LineStrip, 12) {
 
 		shape[0].position = { -40.f, 40.f };  
 		shape[1].position = { -50.f, 10.f };  
@@ -255,21 +258,35 @@ public:
 		return sf::Vector2f(cos(angle), sin(angle));
 	}
 
+	static sf::Vector2f getRandomPosition() {
+		std::random_device rd;  // Gets random seed from system
+		std::mt19937 gen(rd()); // Seeded Generator
+
+		// Set distributions
+		std::uniform_real_distribution<float> xAxis(ASTEROID_WIDTH / 2.f, SCREEN_WIDTH - ASTEROID_WIDTH / 2.f);
+		std::uniform_real_distribution<float> yAxis(ASTEROID_HEIGHT / 2.f, SCREEN_HEIGHT - ASTEROID_HEIGHT / 2.f);
+
+		return sf::Vector2f(xAxis(gen), yAxis(gen));
+	}
+
 private:
 	sf::Vector2f direction;
 	sf::VertexArray shape;
 };
 
 int main() {
-	sf::RenderWindow window(sf::VideoMode({ static_cast<unsigned int>(SCREEN_WIDTH), static_cast<unsigned int>(SCREEN_HEIGHT) }),
+	sf::RenderWindow window(sf::VideoMode({
+		                    static_cast<unsigned int>(SCREEN_WIDTH), static_cast<unsigned int>(SCREEN_HEIGHT)}), 
 		                    "Asteroids", sf::Style::Close | sf::Style::Titlebar);
 
 	sf::Clock clock;
 
 	entities.push_back(new Player());
 
-	// Just moves on the x-axis right now
-	entities.push_back(new Asteroid(Asteroid::getRandomDirection()));
+	// Uses scope resolution operator to access it(the static function) from the class, not the instance
+	// entities.push_back(new Asteroid(Asteroid::getRandomDirection())); 
+
+	float asteroidSpawnTime = ASTEROID_SPAWN_TIME;
 
 	while (window.isOpen()) {
 		float deltaTime = clock.restart().asSeconds();
@@ -283,10 +300,9 @@ int main() {
 
 		toAddList.clear();
 		toRemoveList.clear();
-
-		// Update Game
 		window.clear();
 
+		asteroidSpawnTime -= deltaTime;
 		
 		for (size_t i = 0; i < entities.size(); i++) {
 			entities[i]->update(deltaTime);
@@ -300,6 +316,12 @@ int main() {
 
 		for (auto& ptr : toAddList) {
 			entities.push_back(ptr);
+		}
+
+		if (asteroidSpawnTime <= 0) {
+			// Uses scope resolution operator to access it(the static function) from the class, not the instance
+			entities.push_back(new Asteroid());
+			asteroidSpawnTime = ASTEROID_SPAWN_TIME;
 		}
 		
 		/*
