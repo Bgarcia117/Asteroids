@@ -23,7 +23,7 @@ constexpr float BULLET_LIFE = 3.f;
 const float ASTEROID_WIDTH = 80.f;
 const float ASTEROID_HEIGHT = 80.f;
 const float ASTEROID_SPIN = 20.f;
-const float ASTEROID_SPEED = 80.f;
+const float ASTEROID_SPEED = 180.f;
 
 class Entity {
 public:
@@ -202,6 +202,21 @@ public:
 		position += ASTEROID_SPEED * direction * deltaTime;
 		angle += ASTEROID_SPIN * deltaTime;
 
+		// Absolute value prevents infinite loop if it goes out of bounds and keeps flipping
+		if (position.x < ASTEROID_WIDTH / 2.f) {
+			direction.x = abs(direction.x);
+		}
+		else if (position.x > SCREEN_WIDTH - ASTEROID_WIDTH / 2.f) {
+			direction.x = -abs(direction.x);
+		}
+
+		if (position.y < ASTEROID_HEIGHT / 2.f) {
+			direction.y = abs(direction.y);
+		}
+		else if (position.y > SCREEN_HEIGHT - ASTEROID_HEIGHT / 2.f) {
+			direction.y = -abs(direction.y);
+		}
+
 	}
 
 	void render(sf::RenderTarget& target) override {
@@ -234,7 +249,7 @@ int main() {
 	entities.push_back(new Player());
 
 	// Just moves on the x-axis right now
-	entities.push_back(new Asteroid({1.f, 0.f}));
+	entities.push_back(new Asteroid({0.f, 1.f}));
 
 	while (window.isOpen()) {
 		float deltaTime = clock.restart().asSeconds();
