@@ -7,6 +7,12 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
+constexpr float SCREEN_WIDTH = 1200.f;
+constexpr float SCREEN_HEIGHT = 900.f;
+
+constexpr float PLAYER_WIDTH = 40.f;
+constexpr float PLAYER_HEIGHT = 50.f;
+
 constexpr float PI = 3.14159265f;
 constexpr float TURN_SPEED = 200.0f;
 constexpr float PLAYER_SPEED = 200.f;
@@ -14,8 +20,10 @@ constexpr float SHOOT_DELAY = 0.2f;
 constexpr float	BULLET_SPEED = 400.f;
 constexpr float BULLET_LIFE = 3.f;
 
+const float ASTEROID_WIDTH = 80.f;
+const float ASTEROID_HEIGHT = 80.f;
 const float ASTEROID_SPIN = 20.f;
-const float ASTEROID_SPEED = 70.f;
+const float ASTEROID_SPEED = 80.f;
 
 class Entity {
 public:
@@ -71,10 +79,10 @@ public:
 		: Entity({500.f, 500.f}, 0.f), shape(sf::PrimitiveType::LineStrip, 5), shootTimer() {
 
 		shape[0].position = { 0.f, -30.f };  // Tip
-		shape[1].position = { 20.f, 20.f };  // Bottom right
-		shape[2].position = { 0.f, 10.f };   // Inward dip
-		shape[3].position = { -20.f, 20.f }; // Bottom left
-		shape[4].position = { 0.f, -30.f };  // Close loop
+		shape[1].position = { 20.f, 20.f };  // Bottom Left
+		shape[2].position = { 0.f, 10.f };   // Inward Dip
+		shape[3].position = { -20.f, 20.f }; // Bottom Right
+		shape[4].position = { 0.f, -30.f };  // Closes Shape
 
 		/*
 		 VertexArray No longer provides begin() and end() so this cannot be used
@@ -92,20 +100,27 @@ public:
 	void update(float deltaTime) override {
 		shootTimer -= deltaTime;
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left)) {
 			angle -= TURN_SPEED * deltaTime;
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right)) {
 			angle += TURN_SPEED * deltaTime;
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up)) {
 			// Degrees -> Radian Equation: degrees * (PI/180)
 			float radians = (angle - 90.f) * (PI / 180.f);
 
 			position.x += cos(radians) * PLAYER_SPEED * deltaTime;
 			position.y += sin(radians) * PLAYER_SPEED * deltaTime;
+
+			// Max ensures that the position is never less than half the player's width
+			// Min ensures the position is never more than the screen width/height - half of the player's width/height
+			// This works bc the center is what we are moving meaning half is ahead of it
+			// Known as "Clamping" used to pull player back in if they go out of bounds
+			position.x = std::min(std::max(position.x, PLAYER_WIDTH / 2.f), SCREEN_WIDTH - PLAYER_WIDTH / 2.f);
+			position.y = std::min(std::max(position.y, PLAYER_HEIGHT / 2.f), SCREEN_HEIGHT - PLAYER_HEIGHT / 2.f);
 
 		}
 
@@ -114,7 +129,6 @@ public:
 			float radians = (angle - 90.f) * (PI / 180.f);
 
 			toAddList.push_back(new Bullet(position, sf::Vector2f(cos(radians), sin(radians))));
-			std::cout << entities.size() << std::endl;
 		}
 
 	}
@@ -212,7 +226,8 @@ private:
 };
 
 int main() {
-	sf::RenderWindow window(sf::VideoMode({ 1200, 900 }), "Asteroids", sf::Style::Close | sf::Style::Titlebar);
+	sf::RenderWindow window(sf::VideoMode({ static_cast<unsigned int>(SCREEN_WIDTH), static_cast<unsigned int>(SCREEN_HEIGHT) }),
+		                    "Asteroids", sf::Style::Close | sf::Style::Titlebar);
 
 	sf::Clock clock;
 
