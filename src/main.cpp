@@ -2,6 +2,7 @@
 #include <numbers>
 #include <vector>
 #include <list>
+#include <random>
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -24,6 +25,7 @@ const float ASTEROID_WIDTH = 80.f;
 const float ASTEROID_HEIGHT = 80.f;
 const float ASTEROID_SPIN = 20.f;
 const float ASTEROID_SPEED = 180.f;
+const float ASTEROID_SPAWN_TIME = 3.f;
 
 class Entity {
 public:
@@ -235,6 +237,24 @@ public:
 		target.draw(shape, states);
 	}
 
+	// Static so it does not depend on an instance of the class
+	static sf::Vector2f getRandomDirection() {
+		std::random_device rd;  // Gets random seed from system
+
+		std::mt19937 gen(rd()); // Seeded Generator
+		
+		// Dist obj generates floats uniformly
+		// 2PI is a full circle in radians for bouncing around
+		std::uniform_real_distribution<float> dist(0.f, 2.f * PI);
+
+		// Calls the dist obj's operator to generate a number
+		float angle = dist(gen);
+
+		// Cosine gives an x and sine gives a y coordinate on a circle
+		// Refer to the Unit Circle
+		return sf::Vector2f(cos(angle), sin(angle));
+	}
+
 private:
 	sf::Vector2f direction;
 	sf::VertexArray shape;
@@ -249,7 +269,7 @@ int main() {
 	entities.push_back(new Player());
 
 	// Just moves on the x-axis right now
-	entities.push_back(new Asteroid({0.f, 1.f}));
+	entities.push_back(new Asteroid(Asteroid::getRandomDirection()));
 
 	while (window.isOpen()) {
 		float deltaTime = clock.restart().asSeconds();
