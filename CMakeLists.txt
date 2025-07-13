@@ -30,7 +30,7 @@ file(GLOB_RECURSE HEADERS
 add_executable(Asteroids ${SOURCES} ${HEADERS})
 
 # Add include directory so your source files can find headers
-target_include_directories(Asteroids PRIVATE include)
+target_include_directories(Asteroids PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
 # Set C++ standard
 target_compile_features(Asteroids PRIVATE cxx_std_23)
