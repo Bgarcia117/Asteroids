@@ -2,9 +2,9 @@
 #include "asteroid.h"
 #include "player.h"
 
-std::vector<Entity*> entities{};
-std::list<std::vector<Entity*>::const_iterator> toRemoveList{};
-std::list<Entity*> toAddList{};
+std::vector<Entity*> Game::entities{};
+std::list<std::vector<Entity*>::const_iterator> Game::toRemoveList{};
+std::list<Entity*> Game::toAddList{};
 float Game::asteroidSpawnTime{};
 
 void Game::begin() {
@@ -31,6 +31,7 @@ void Game::update(sf::RenderTarget& target, float deltaTime) {
 		entities.push_back(ptr);
 	}
 
+	asteroidSpawnTime -= deltaTime;
 	if (asteroidSpawnTime <= 0) {
 		entities.push_back(new Asteroid());
 		asteroidSpawnTime = ASTEROID_SPAWN_TIME;

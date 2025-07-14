@@ -1,7 +1,8 @@
 #include "asteroid.h"
+#include "global.h"
+#include <random>
 
-Asteroid::Asteroid(sf::Vector2f position = getRandomPosition(), 
-	     sf::Vector2f direction = Asteroid::getRandomDirection())
+Asteroid::Asteroid(sf::Vector2f position, sf::Vector2f direction)
 	   : Entity(position, 0.f), direction(direction), shape(sf::PrimitiveType::LineStrip, 12) {
 
 	shape[0].position = { -40.f, 40.f };
@@ -22,7 +23,7 @@ Asteroid::Asteroid(sf::Vector2f position = getRandomPosition(),
 	}
 }
 
-void Asteroid::update(float deltaTime) override {
+void Asteroid::update(float deltaTime) {
 	position += ASTEROID_SPEED * direction * deltaTime;
 	angle += ASTEROID_SPIN * deltaTime;
 
@@ -43,7 +44,7 @@ void Asteroid::update(float deltaTime) override {
 
 }
 
-void Asteroid::render(sf::RenderTarget& target) override {
+void Asteroid::render(sf::RenderTarget& target) {
 	// LineStrip shapes do not have an internal position or rotation
 	// It is just a bunch of points, so we need to handle that with tranform
 	// Handles movement, rotation, and scaling
@@ -60,7 +61,7 @@ void Asteroid::render(sf::RenderTarget& target) override {
 }
 
 // Static so it does not depend on an instance of the class
-static sf::Vector2f Asteroid::getRandomDirection() {
+sf::Vector2f Asteroid::getRandomDirection() {
 	std::random_device rd;  // Gets random seed from system
 
 	std::mt19937 gen(rd()); // Seeded Generator
@@ -77,7 +78,7 @@ static sf::Vector2f Asteroid::getRandomDirection() {
 	return sf::Vector2f(cos(angle), sin(angle));
 }
 
-static sf::Vector2f Asteroid::getRandomPosition() {
+sf::Vector2f Asteroid::getRandomPosition() {
 	std::random_device rd;  // Gets random seed from system
 	std::mt19937 gen(rd()); // Seeded Generator
 

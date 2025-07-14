@@ -3,6 +3,11 @@
 #include "global.h"
 #include "game.h"
 
+constexpr float PLAYER_WIDTH = 40.f;
+constexpr float PLAYER_HEIGHT = 50.f;
+constexpr float PLAYER_SPEED = 200.f;
+constexpr float TURN_SPEED = 200.0f;
+
 Player::Player()
 	: Entity({ 500.f, 500.f }, 0.f), shape(sf::PrimitiveType::LineStrip, 5), shootTimer() {
 
@@ -25,7 +30,7 @@ Player::Player()
 }
 
 
-void Player::update(float deltaTime) override {
+void Player::update(float deltaTime) {
 	shootTimer -= deltaTime;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
@@ -72,7 +77,7 @@ void Player::update(float deltaTime) override {
 	*
 	* @param target The SFML render target to draw to
 	*/
-void Player::render(sf::RenderTarget& target) override {
+void Player::render(sf::RenderTarget& target) {
 	// Holds translation and rotation to be applied to shape when drawn
 	sf::Transform transform;
 

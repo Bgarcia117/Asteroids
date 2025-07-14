@@ -1,8 +1,5 @@
 #pragma once
-#include "global.h"
 #include "entity.h"
-#include "game.h"
-
 constexpr float SHOOT_DELAY = 0.2f;
 constexpr float	BULLET_SPEED = 400.f;
 constexpr float BULLET_LIFE = 3.f;

@@ -1,15 +1,12 @@
 #pragma once
-#include <numbers>
-#include <random>
 
-#include "global.h"
 #include "entity.h"
 
-const float ASTEROID_WIDTH = 80.f;
-const float ASTEROID_HEIGHT = 80.f;
-const float ASTEROID_SPIN = 20.f;
-const float ASTEROID_SPEED = 180.f;
-const float ASTEROID_SPAWN_TIME = 3.f;
+constexpr float ASTEROID_WIDTH = 80.f;
+constexpr float ASTEROID_HEIGHT = 80.f;
+constexpr float ASTEROID_SPIN = 20.f;
+constexpr float ASTEROID_SPEED = 180.f;
+constexpr float ASTEROID_SPAWN_TIME = 3.f;
 
 class Asteroid : public Entity {
 public:

@@ -14,5 +14,5 @@ public:
 	static std::list<Entity*> toAddList;
 
 private:
-	float asteroidSpawnTime;
+	static float asteroidSpawnTime;
 };
