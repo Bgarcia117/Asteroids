@@ -60,6 +60,10 @@ void Asteroid::render(sf::RenderTarget& target) {
 	target.draw(shape, states);
 }
 
+const sf::VertexArray& Asteroid::getVertexArray() const {
+	return shape;
+}
+
 // Static so it does not depend on an instance of the class
 sf::Vector2f Asteroid::getRandomDirection() {
 	std::random_device rd;  // Gets random seed from system
