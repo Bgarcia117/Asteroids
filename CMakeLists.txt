@@ -4,7 +4,9 @@ project(Asteroids CXX)
 # Set output directory for executables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# Fetch SFML
+# ----------------------------------------------------------------------------
+# Fetch SFML from GitHub using FetchContent
+# ----------------------------------------------------------------------------
 include(FetchContent)
 FetchContent_Declare(SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -14,26 +16,30 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-# Collect all source files from src directory
-file(GLOB_RECURSE SOURCES 
-    "src/*.cpp"
-    "src/*.c"
-)
+# ----------------------------------------------------------------------------
+# Collect all source files and header files
+# Use CONFIGURE_DEPENDS to let CMake re-run automatically
+# if new files are added to these folders (supported in newer CMake versions)
+# ----------------------------------------------------------------------------
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "src/*.cpp" "src/*.c")
+file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS "include/*.h" "include/*.hpp")
 
-# Collect all header files from include directory (optional, for IDE organization)
-file(GLOB_RECURSE HEADERS 
-    "include/*.h"
-    "include/*.hpp"
-) 
+# ----------------------------------------------------------------------------
+# Create the executable from all source and header files
+# ----------------------------------------------------------------------------
+add_executable(Asteroids ${SOURCE_FILES} ${HEADER_FILES})
 
-# Create executable with all source files
-add_executable(Asteroids ${SOURCES} ${HEADERS})
-
-# Add include directory so your source files can find headers
+# ----------------------------------------------------------------------------
+# Add the include directory so headers can be found with #include "..."
+# ----------------------------------------------------------------------------
 target_include_directories(Asteroids PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
-# Set C++ standard
+# ----------------------------------------------------------------------------
+# Use C++23 standard
+# ----------------------------------------------------------------------------
 target_compile_features(Asteroids PRIVATE cxx_std_23)
 
-# Link SFML libraries
+# ----------------------------------------------------------------------------
+# Link the SFML graphics module (includes Window, System, etc.)
+# ----------------------------------------------------------------------------
 target_link_libraries(Asteroids PRIVATE SFML::Graphics)
