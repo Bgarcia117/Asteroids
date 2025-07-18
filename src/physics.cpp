@@ -42,7 +42,7 @@ bool physics::intersects(const sf::Vector2f& point, const sf::VertexArray& polyg
 	return intersectionCount % 2 == 1;
 }
 
-sf::VertexArray& physics::getTransformed(const sf::VertexArray& polygon,
+sf::VertexArray physics::getTransformed(const sf::VertexArray& polygon,
 	                                     const sf::Transform& transform) {
 	sf::VertexArray transformed = polygon;
 

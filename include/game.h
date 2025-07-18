@@ -13,6 +13,10 @@ public:
 	static std::list<std::vector<Entity*>::const_iterator> toRemoveList;
 	static std::list<Entity*> toAddList;
 
+	static size_t score;
+
 private:
 	static float asteroidSpawnTime;
+	static sf::Text scoreText;
+	static sf::Font font;
 };

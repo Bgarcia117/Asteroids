@@ -41,7 +41,12 @@ void Bullet::update(float deltaTime) {
 			// Imagine a line drawn over the shape, how many times does it overlap?
 			if (physics::intersects(position,
 				physics::getTransformed(asteroid->getVertexArray(), transform))) {
+
 				lifetime = 0.f;
+
+				Game::toRemoveList.push_back(std::find(Game::entities.begin(),
+					                                   Game::entities.end(), asteroid));
+				Game::score += 10;
 			}
 		}
 	}

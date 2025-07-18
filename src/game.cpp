@@ -5,9 +5,19 @@
 std::vector<Entity*> Game::entities{};
 std::list<std::vector<Entity*>::const_iterator> Game::toRemoveList{};
 std::list<Entity*> Game::toAddList{};
+
+size_t Game::score{};
 float Game::asteroidSpawnTime{};
 
+sf::Text Game::scoreText;
+sf::Font Game::font{};
+
 void Game::begin() {
+	font.openFromFile("font.ttf");
+	scoreText.setFont(font);
+	scoreText.setPosition(sf::Vector2f(40, 20));
+	scoreText.setCharacterSize(48); // Set to 30 by default
+
 	entities.push_back(new Player());
 	asteroidSpawnTime = ASTEROID_SPAWN_TIME;
 }
@@ -36,4 +46,7 @@ void Game::update(sf::RenderTarget& target, float deltaTime) {
 		entities.push_back(new Asteroid());
 		asteroidSpawnTime = ASTEROID_SPAWN_TIME;
 	}
+
+	scoreText.setString(std::to_string(score));
+	target.draw(scoreText);
 }
