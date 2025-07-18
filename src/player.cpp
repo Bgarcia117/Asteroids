@@ -7,6 +7,7 @@ constexpr float PLAYER_WIDTH = 40.f;
 constexpr float PLAYER_HEIGHT = 50.f;
 constexpr float PLAYER_SPEED = 200.f;
 constexpr float TURN_SPEED = 200.0f;
+constexpr float SHOOT_DELAY = 0.5f;
 
 Player::Player()
 	: Entity({ 500.f, 500.f }, 0.f), shape(sf::PrimitiveType::LineStrip, 5), shootTimer() {
