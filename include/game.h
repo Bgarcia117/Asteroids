@@ -17,6 +17,6 @@ public:
 
 private:
 	static float asteroidSpawnTime;
-	static sf::Text scoreText;
+	static std::optional<sf::Text> scoreText;
 	static sf::Font font;
 };

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "game.h"
 #include "asteroid.h"
 #include "player.h"
@@ -9,14 +10,19 @@ std::list<Entity*> Game::toAddList{};
 size_t Game::score{};
 float Game::asteroidSpawnTime{};
 
-sf::Text Game::scoreText;
 sf::Font Game::font{};
+std::optional<sf::Text> Game::scoreText{};
 
 void Game::begin() {
-	font.openFromFile("font.ttf");
-	scoreText.setFont(font);
-	scoreText.setPosition(sf::Vector2f(40, 20));
-	scoreText.setCharacterSize(48); // Set to 30 by default
+
+	if (!font.openFromFile("assets/fonts/font.ttf")) {
+		std::cerr << "ERROR::GAME::Failed to load font!" << std::endl;
+		std::exit(EXIT_FAILURE);
+	}
+
+	scoreText = sf::Text(font);
+	scoreText->setPosition(sf::Vector2f(40, 20));
+	scoreText->setCharacterSize(48); // Set to 30 by default
 
 	entities.push_back(new Player());
 	asteroidSpawnTime = ASTEROID_SPAWN_TIME;
@@ -47,6 +53,6 @@ void Game::update(sf::RenderTarget& target, float deltaTime) {
 		asteroidSpawnTime = ASTEROID_SPAWN_TIME;
 	}
 
-	scoreText.setString(std::to_string(score));
-	target.draw(scoreText);
+	scoreText->setString(std::to_string(score));
+	target.draw(*scoreText);
 }
