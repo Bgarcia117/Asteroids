@@ -30,6 +30,15 @@ file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS "include/*.h" "include/*.hpp")
 add_executable(Asteroids ${SOURCE_FILES} ${HEADER_FILES})
 
 # ----------------------------------------------------------------------------
+# Copy assets to build directory after building
+# ----------------------------------------------------------------------------
+add_custom_command(TARGET Asteroids POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/assets
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
+)
+
+# ----------------------------------------------------------------------------
 # Add the include directory so headers can be found with #include "..."
 # ----------------------------------------------------------------------------
 target_include_directories(Asteroids PRIVATE ${CMAKE_SOURCE_DIR}/include)
