@@ -51,4 +51,4 @@ target_compile_features(Asteroids PRIVATE cxx_std_23)
 # ----------------------------------------------------------------------------
 # Link the SFML graphics module (includes Window, System, etc.)
 # ----------------------------------------------------------------------------
-target_link_libraries(Asteroids PRIVATE SFML::Graphics)
+target_link_libraries(Asteroids PRIVATE SFML::Graphics SFML::Audio)
