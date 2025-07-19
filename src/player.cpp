@@ -1,3 +1,4 @@
+#include <iostream>
 #include "player.h"
 #include "bullet.h"
 #include "global.h"
@@ -27,6 +28,16 @@ Player::Player()
 
 	for (std::size_t i = 0; i < shape.getVertexCount(); ++i) {
 		shape[i].color = sf::Color::White;
+	}
+
+	// .find() return iterator pointing to found element or .end()
+	auto it = Game::soundBuffers.find("shoot");
+	if (it != Game::soundBuffers.end()) {
+		// second is the actual sf::SoundBuffer object
+		shootSound.emplace(it->second);
+	}
+	else {
+		std::cerr << "Shoot sound buffer not found in Game::soundBuffers" << std::endl;
 	}
 }
 
@@ -62,6 +73,7 @@ void Player::update(float deltaTime) {
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space) && shootTimer <= 0.0f) {
+		shootSound->play();
 		shootTimer = SHOOT_DELAY;
 		float radians = (angle - 90.f) * (PI / 180.f);
 

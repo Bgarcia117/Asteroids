@@ -12,6 +12,7 @@ float Game::asteroidSpawnTime{};
 
 sf::Font Game::font{};
 std::optional<sf::Text> Game::scoreText{};
+std::unordered_map<std::string, sf::SoundBuffer> Game::soundBuffers;
 
 void Game::begin() {
 
@@ -23,6 +24,11 @@ void Game::begin() {
 	scoreText = sf::Text(font);
 	scoreText->setPosition(sf::Vector2f(40, 20));
 	scoreText->setCharacterSize(48); // Set to 30 by default
+
+	if (!soundBuffers["shoot"].loadFromFile("assets/sounds/shoot.wav")) {
+		std::cerr << "Failed to load shoot.wav" << std::endl;
+		soundBuffers.erase("shoot");
+	}
 
 	entities.push_back(new Player());
 	asteroidSpawnTime = ASTEROID_SPAWN_TIME;

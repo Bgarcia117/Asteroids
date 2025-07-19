@@ -1,5 +1,6 @@
 #pragma once
-
+#include <SFML/Audio.hpp>
+#include <unordered_map>
 #include <vector>
 #include <list>
 #include <entity.h>
@@ -14,6 +15,7 @@ public:
 	static std::list<Entity*> toAddList;
 
 	static size_t score;
+	static std::unordered_map<std::string, sf::SoundBuffer> soundBuffers;
 
 private:
 	static float asteroidSpawnTime;
