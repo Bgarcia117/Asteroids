@@ -42,6 +42,30 @@ bool physics::intersects(const sf::Vector2f& point, const sf::VertexArray& polyg
 	return intersectionCount % 2 == 1;
 }
 
+// Test Driver Function
+// Uses SAT: Separating Algorithm Theory
+// Only works on convex polygons
+bool physics::intersects(const sf::VertexArray& poly1, const sf::VertexArray& poly2) {
+	size_t n1 = poly1.getVertexCount() - 1;
+	size_t n2 = poly1.getVertexCount() - 1;
+
+	for (size_t i = 0; i < n1; i++) {
+		sf::Vector2f edge = poly1[i].position - poly1[(i + 1) % n1].position;
+		sf::Vector2f normal(-edge.y, edge.x);
+
+		// Normalize the vector
+		float length = sqrt(normal.x * normal.x + normal.y * normal.y);
+		normal /= length;
+
+		float min1 = std::numeric_limits<float>::max();
+		float max1 = std::numeric_limits<float>::min();
+		float min2 = std::numeric_limits<float>::max();
+		float max2 = std::numeric_limits<float>::min();
+	}
+
+	return false;
+}
+
 sf::VertexArray physics::getTransformed(const sf::VertexArray& polygon,
 	                                     const sf::Transform& transform) {
 	sf::VertexArray transformed = polygon;
