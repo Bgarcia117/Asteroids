@@ -55,32 +55,51 @@ bool physics::intersects(const sf::VertexArray& poly1, const sf::VertexArray& po
 
 	// Test all edge normals from polygon 1 as potential separting axes
 	for (size_t i = 0; i < n1; i++) {
-		sf::Vector2f edge = poly1[i].position - poly1[(i + 1) % n1].position;
+		// %n1 prevents us from going out of bounds connecting last vertex to first to close shape
+		sf::Vector2f edge = poly1[i].position - poly1[(i + 1) % n1].position; // How is the edge stored? a line? 
+
+		// Get perpendicular to edge for direction
+		// If edge is (x, y), then perpendicular is (-y, x)
 		sf::Vector2f normal(-edge.y, edge.x);
 
-		// Normalize the vector
+		// Normalize the vector (Scales vector magnitude/length to 1 while preserving direction)
 		float length = sqrt(normal.x * normal.x + normal.y * normal.y);
+
+		// Scales x and y of normal down to 1
 		normal /= length;
 
+		// Initialize the projection bounds for both polygons
+		// We don't know what our max or min could be so we use this
+		// Explained more in for loop
 		float min1 = std::numeric_limits<float>::max();
 		float max1 = std::numeric_limits<float>::min();
 		float min2 = std::numeric_limits<float>::max();
 		float max2 = std::numeric_limits<float>::min();
 
+		// Polygon 1: Find min/max projections onto the axis
 		for (size_t j = 0; j < n1; j++) {
+			// Project the vertices using the normal
+			// Store as float for simplicity and performace and gives up how far up the slope it is
+			// We know it lands on the axis, so we just need to know where it lands
 			float projection =
 				poly1[j].position.x * normal.x + poly1[j].position.y * normal.y;
+
+			// Our first actual mind and max replace those values now
 			min1 = std::min(min1, projection);
 			max1 = std::max(max1, projection);
 		}
 
+		// Polygon 2: Find min/max projections onto the axis
 		for (size_t k = 0; k < n2; k++) {
 			float projection =
 				poly2[k].position.x * normal.x + poly2[k].position.y * normal.y;
+
 			min2 = std::min(min2, projection);
 			max2 = std::max(max2, projection);
 		}
 
+		// Compare the min and max values of the two polygons on the axis
+		// Checks if one is above the other or to the right or left
 		if (max1 < min2 || max2 < min1) {
 			return false;
 		}
