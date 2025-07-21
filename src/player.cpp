@@ -3,6 +3,8 @@
 #include "bullet.h"
 #include "global.h"
 #include "game.h"
+#include "asteroid.h"
+#include "physics.h"
 
 constexpr float PLAYER_WIDTH = 40.f;
 constexpr float PLAYER_HEIGHT = 50.f;
@@ -81,6 +83,38 @@ void Player::update(float deltaTime) {
 
 		Game::toAddList.push_back(new Bullet(position, sf::Vector2f(cos(radians), sin(radians))));
 	}
+
+	// =========== START ======
+	
+	sf::Transform playerTransform;
+	playerTransform.translate(position);
+	playerTransform.rotate(sf::degrees(angle));
+
+	for (size_t i = 0; i < Game::entities.size(); i++) {
+
+		// Check if the current entity is an asteroid
+		if (typeid(*Game::entities[i]) == typeid(Asteroid)) {
+
+			// If entity is an asteroid, dynamic cast to access members
+			Asteroid* asteroid = dynamic_cast<Asteroid*>(Game::entities[i]);
+
+			// Applies position and angle to shape
+			sf::Transform asteroidTransform;
+			asteroidTransform.translate(asteroid->position);
+			asteroidTransform.rotate(sf::degrees(asteroid->angle));
+
+			// Checks if the num  of intersections is even or odd
+			// Imagine a line drawn over the shape, how many times does it overlap?
+			if (physics::intersects(physics::getTransformed(shape, playerTransform),
+				physics::getTransformed(asteroid->getVertexArray(), asteroidTransform))) {
+				
+				Game::gameOver();
+			}
+		}
+	}
+
+	// ========== END ================
+
 
 }
 

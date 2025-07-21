@@ -56,7 +56,7 @@ bool physics::intersects(const sf::VertexArray& poly1, const sf::VertexArray& po
 	// Test all edge normals from polygon 1 as potential separting axes
 	for (size_t i = 0; i < n1; i++) {
 		// %n1 prevents us from going out of bounds connecting last vertex to first to close shape
-		sf::Vector2f edge = poly1[i].position - poly1[(i + 1) % n1].position; // How is the edge stored? a line? 
+		sf::Vector2f edge = poly1[(i + 1) % n1].position - poly1[i].position;
 
 		// Get perpendicular to edge for direction
 		// If edge is (x, y), then perpendicular is (-y, x)
@@ -94,6 +94,41 @@ bool physics::intersects(const sf::VertexArray& poly1, const sf::VertexArray& po
 			float projection =
 				poly2[k].position.x * normal.x + poly2[k].position.y * normal.y;
 
+			min2 = std::min(min2, projection);
+			max2 = std::max(max2, projection);
+		}
+
+		// Compare the min and max values of the two polygons on the axis
+		// Checks if one is above the other or to the right or left
+		if (max1 < min2 || max2 < min1) {
+			return false;
+		}
+	}
+
+	// Test Polygon 2:
+	for (size_t i = 0; i < n2; i++) {
+		sf::Vector2f edge = poly2[(i + 1) % n2].position - poly2[i].position;
+		sf::Vector2f normal(-edge.y, edge.x);
+
+		float length = sqrt(normal.x * normal.x + normal.y * normal.y);
+		if (length == 0) continue; // Skip zero-length edges
+		normal /= length;
+
+		float min1 = std::numeric_limits<float>::max();
+		float max1 = std::numeric_limits<float>::min();
+		float min2 = std::numeric_limits<float>::max();
+		float max2 = std::numeric_limits<float>::min();
+
+		// Project polygon 1 vertices
+		for (size_t j = 0; j < n1; j++) {
+			float projection = poly1[j].position.x * normal.x + poly1[j].position.y * normal.y;
+			min1 = std::min(min1, projection);
+			max1 = std::max(max1, projection);
+		}
+
+		// Project polygon 2 vertices
+		for (size_t k = 0; k < n2; k++) {
+			float projection = poly2[k].position.x * normal.x + poly2[k].position.y * normal.y;
 			min2 = std::min(min2, projection);
 			max2 = std::max(max2, projection);
 		}

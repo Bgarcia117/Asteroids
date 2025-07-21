@@ -10,14 +10,15 @@ std::list<Entity*> Game::toAddList{};
 size_t Game::score{};
 float Game::asteroidSpawnTime{};
 
+bool Game::isGameOver{};
+
 sf::Font Game::font{};
 std::optional<sf::Text> Game::scoreText{};
 
 sf::SoundBuffer Game::shootSoundBuffer{};
 std::optional<sf::Sound> Game::shootSound{};
 
-void Game::begin() {
-
+void Game::init() {
 	if (!font.openFromFile("assets/fonts/font.ttf")) {
 		std::cerr << "ERROR::GAME::Failed to load font!" << std::endl;
 		std::exit(EXIT_FAILURE);
@@ -32,7 +33,10 @@ void Game::begin() {
 		std::exit(EXIT_FAILURE);
 	}
 	shootSound = sf::Sound(shootSoundBuffer);
+}
 
+void Game::begin() {
+	isGameOver = false;
 	entities.push_back(new Player());
 	asteroidSpawnTime = ASTEROID_SPAWN_TIME;
 }
@@ -64,4 +68,14 @@ void Game::update(sf::RenderTarget& target, float deltaTime) {
 
 	scoreText->setString(std::to_string(score));
 	target.draw(*scoreText);
+
+	if (isGameOver) {
+		entities.clear();
+		score = 0;
+		begin();
+	}
+}
+
+void Game::gameOver() {
+	isGameOver = true;
 }
