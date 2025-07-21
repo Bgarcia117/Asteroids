@@ -10,7 +10,6 @@ public:
 	void render(sf::RenderTarget& target) override;
 
 private:
-	std::optional<sf::Sound> shootSound;  // Uses sounds
 	sf::VertexArray shape;
 	
 	float shootTimer;

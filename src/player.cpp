@@ -30,6 +30,7 @@ Player::Player()
 		shape[i].color = sf::Color::White;
 	}
 
+	/*
 	// .find() return iterator pointing to found element or .end()
 	auto it = Game::soundBuffers.find("shoot");
 	if (it != Game::soundBuffers.end()) {
@@ -39,6 +40,7 @@ Player::Player()
 	else {
 		std::cerr << "Shoot sound buffer not found in Game::soundBuffers" << std::endl;
 	}
+	*/
 }
 
 
@@ -73,7 +75,7 @@ void Player::update(float deltaTime) {
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space) && shootTimer <= 0.0f) {
-		shootSound->play();
+		Game::shootSound->play();
 		shootTimer = SHOOT_DELAY;
 		float radians = (angle - 90.f) * (PI / 180.f);
 

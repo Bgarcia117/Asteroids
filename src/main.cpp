@@ -16,9 +16,9 @@ int main() {
 	sf::VertexArray poly2(sf::PrimitiveType::LineStrip);
 
 	// Tracks which polygon is being drawn or if in test mode
-	enum { POLY_1, POLY_2, TEST } state = POLY_1;
+	// enum { POLY_1, POLY_2, TEST } state = POLY_1;
 
-	// Game::begin();
+	Game::begin();
 
 	while (window.isOpen()) {
 		float deltaTime = clock.restart().asSeconds();
@@ -28,6 +28,7 @@ int main() {
 				window.close();
 			} 
 
+			/*
 			else if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
 				if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
 					sf::Vector2f pos = (sf::Vector2f)sf::Mouse::getPosition(window);
@@ -70,14 +71,15 @@ int main() {
 					// Note: Spacebar does nothing if no vertices are drawn
 				}
 			}
+			*/
 
  		}
 
-		// Game::update(window, deltaTime);
-		window.clear();
+		Game::update(window, deltaTime);
+		// window.clear();
 
-		window.draw(poly1);
-		window.draw(poly2);
+		// window.draw(poly1);
+		// window.draw(poly2);
 		window.display();
 	}
 
