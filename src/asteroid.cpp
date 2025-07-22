@@ -3,7 +3,7 @@
 #include <random>
 
 Asteroid::Asteroid(sf::Vector2f position, sf::Vector2f direction)
-	   : Entity(position, 0.f), direction(direction), shape(sf::PrimitiveType::LineStrip, 12) {
+	   : Entity(position, 0.f), direction(direction), shape(sf::PrimitiveType::LineStrip, 12), life(0.f) {
 
 	shape[0].position = { -40.f, 40.f };
 	shape[1].position = { -50.f, 10.f };
@@ -24,6 +24,8 @@ Asteroid::Asteroid(sf::Vector2f position, sf::Vector2f direction)
 }
 
 void Asteroid::update(float deltaTime) {
+	life += deltaTime; // How long the asteroid has been alive
+
 	position += ASTEROID_SPEED * direction * deltaTime;
 	angle += ASTEROID_SPIN * deltaTime;
 

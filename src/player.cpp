@@ -98,6 +98,11 @@ void Player::update(float deltaTime) {
 			// If entity is an asteroid, dynamic cast to access members
 			Asteroid* asteroid = dynamic_cast<Asteroid*>(Game::entities[i]);
 
+			// When the asteroid can damange player (after spawning)
+			if (asteroid->getLife() < ASTEROID_HIT_TIME) {
+				continue;
+			}
+
 			// Applies position and angle to shape
 			sf::Transform asteroidTransform;
 			asteroidTransform.translate(asteroid->position);

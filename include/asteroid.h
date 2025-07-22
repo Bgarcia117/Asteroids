@@ -6,6 +6,7 @@ constexpr float ASTEROID_WIDTH = 80.f;
 constexpr float ASTEROID_HEIGHT = 80.f;
 constexpr float ASTEROID_SPIN = 20.f;
 constexpr float ASTEROID_SPEED = 180.f;
+constexpr float ASTEROID_HIT_TIME = 2.f;   // When the asteroid can hurt player
 constexpr float ASTEROID_SPAWN_TIME = 3.f;
 
 class Asteroid : public Entity {
@@ -21,7 +22,11 @@ public:
 	static sf::Vector2f getRandomDirection();
 	static sf::Vector2f getRandomPosition();
 
+	float getLife() { return life; }
+
 private:
 	sf::Vector2f direction;
 	sf::VertexArray shape;
+
+	float life; // How long the asteroid has been alive
 };
