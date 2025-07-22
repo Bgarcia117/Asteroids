@@ -13,6 +13,8 @@ float Game::asteroidSpawnTime{};
 bool Game::isGameOver{};
 
 sf::Font Game::font{};
+std::optional<sf::Text> Game::gameOverText{};
+std::optional<sf::Text> Game::continueText{};
 std::optional<sf::Text> Game::scoreText{};
 
 sf::SoundBuffer Game::shootSoundBuffer{};
@@ -27,6 +29,16 @@ void Game::init() {
 	scoreText = sf::Text(font);
 	scoreText->setPosition(sf::Vector2f(40, 20));
 	scoreText->setCharacterSize(48); // Set to 30 by default
+
+	gameOverText = sf::Text(font);
+	gameOverText->setPosition(sf::Vector2f(250, 300));
+	gameOverText->setCharacterSize(128);
+	gameOverText->setString("Game Over!");
+
+	continueText = sf::Text(font);
+	continueText->setPosition(sf::Vector2f(400, 500));
+	continueText->setCharacterSize(30);
+	continueText->setString("Press ENTER to continue...");
 
 	if (!shootSoundBuffer.loadFromFile("assets/sounds/shoot.wav")) {
 		std::cerr << "Failed to load shoot.wav" << std::endl;
@@ -71,8 +83,13 @@ void Game::update(sf::RenderTarget& target, float deltaTime) {
 
 	if (isGameOver) {
 		entities.clear();
-		score = 0;
-		begin();
+		target.draw(*gameOverText);
+		target.draw(*continueText);
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Enter) {
+		    score = 0;
+			begin();
+		}
 	}
 }
 

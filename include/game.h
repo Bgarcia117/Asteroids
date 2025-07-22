@@ -24,6 +24,8 @@ public:
 
 private:
 	static float asteroidSpawnTime;
+	static std::optional<sf::Text> gameOverText;
+	static std::optional<sf::Text> continueText;
 	static std::optional<sf::Text> scoreText;
 	static sf::Font font;
 
