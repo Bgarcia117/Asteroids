@@ -19,7 +19,6 @@ int main() {
 	// enum { POLY_1, POLY_2, TEST } state = POLY_1;
 
 	Game::init();
-	Game::begin();
 
 	while (window.isOpen()) {
 		float deltaTime = clock.restart().asSeconds();
@@ -76,6 +75,7 @@ int main() {
 
  		}
 
+		window.clear();
 		Game::update(window, deltaTime);
 		// window.clear();
 

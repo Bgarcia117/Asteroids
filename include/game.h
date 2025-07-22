@@ -24,10 +24,19 @@ public:
 
 private:
 	static float asteroidSpawnTime;
-	static std::optional<sf::Text> gameOverText;
-	static std::optional<sf::Text> continueText;
-	static std::optional<sf::Text> scoreText;
+	static size_t highScore;
 	static sf::Font font;
 
-	static bool isGameOver;
+	static std::optional<sf::Text> scoreText;
+
+	static std::optional<sf::Text> titleText;
+	static std::optional<sf::Text> playText;
+
+	static std::optional<sf::Text> highScoreText;
+	static std::optional<sf::Text> gameOverText;
+	static std::optional<sf::Text> continueText;
+	static std::optional<sf::Text> menuText;
+
+
+	static enum GameState { MENU, PLAYING, GAME_OVER } state;
 };
