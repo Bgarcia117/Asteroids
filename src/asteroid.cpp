@@ -32,17 +32,17 @@ void Asteroid::update(float deltaTime) {
 
 	// Absolute value prevents infinite loop if it goes out of bounds and keeps flipping
 	if (position.x < ASTEROID_WIDTH / 2.f) {
-		direction.x = abs(direction.x);
+		direction.x = std::abs(direction.x);
 	}
 	else if (position.x > SCREEN_WIDTH - ASTEROID_WIDTH / 2.f) {
-		direction.x = -abs(direction.x);
+		direction.x = -std::abs(direction.x);
 	}
 
 	if (position.y < ASTEROID_HEIGHT / 2.f) {
-		direction.y = abs(direction.y);
+		direction.y = std::abs(direction.y);
 	}
 	else if (position.y > SCREEN_HEIGHT - ASTEROID_HEIGHT / 2.f) {
-		direction.y = -abs(direction.y);
+		direction.y = -std::abs(direction.y);
 	}
 
 }
