@@ -1,16 +1,21 @@
 # Asteroids
 
-A classic Asteroids arcade game built in C++23 using SFML 3.
+A clone of the classic Asteroids arcade game built in C++23 using SFML 3.
 
-![Game Screenshot](https://via.placeholder.com/800x400?text=Asteroids+Game)
-
-## Gameplay
+## Features
 
 - Fly your ship, shoot asteroids, and survive as long as possible
 - Asteroids spawn every few seconds and bounce off screen edges
 - Each asteroid destroyed is worth **10 points**
 - Your **high score is saved** between sessions
 - Colliding with an asteroid ends the game
+
+## Screenshots
+<img width="1200" height="895" alt="Screenshot from 2026-02-20 09-06-31" src="https://github.com/user-attachments/assets/916b292a-c229-460e-a3d5-7bb52dd6ac97" />
+<img width="1198" height="893" alt="Screenshot from 2026-02-20 09-12-47" src="https://github.com/user-attachments/assets/06c1c19d-a405-4ca3-a0cd-d976f64ad305" />
+<img width="1198" height="893" alt="Screenshot from 2026-02-20 09-12-59" src="https://github.com/user-attachments/assets/8c52781d-2791-4f7e-bf0b-10d5b9864d4c" />
+
+
 
 ## Controls
 
