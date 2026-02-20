@@ -1,6 +1,7 @@
 #include "physics.h"
 #include <iostream>
 #include <limits>
+#include <cmath>
 
 bool physics::intersects(const sf::Vector2f& point, const sf::VertexArray& polygon) {
 	size_t numOfVerticies = polygon.getVertexCount();

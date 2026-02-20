@@ -1,6 +1,7 @@
 #include "asteroid.h"
 #include "global.h"
 #include <random>
+#include <cmath>
 
 Asteroid::Asteroid(sf::Vector2f position, sf::Vector2f direction)
 	   : Entity(position, 0.f), direction(direction), shape(sf::PrimitiveType::LineStrip, 12), life(0.f) {

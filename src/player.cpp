@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "player.h"
 #include "bullet.h"
 #include "global.h"
